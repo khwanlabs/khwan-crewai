@@ -1,0 +1,28 @@
+[project]
+name = "khwan-crewai"
+version = "0.1.0"
+description = "Khwan memory for CrewAI — recall/remember/verify as tools, and a prepare→record wrapper around a crew run. Khwan never runs your model."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+dependencies = [
+    "khwan[async]>=0.3",
+    # The tool base class. CrewAI moves fast; pinned to the minor that this was
+    # written and tested against, and widened deliberately rather than by default.
+    "crewai>=0.203,<0.204",
+]
+
+[project.urls]
+Homepage = "https://khwan.ai"
+Documentation = "https://docs.khwan.ai"
+# Renders as "Source" on PyPI. This code sits between a crew and its memory and
+# runs with the user's key, so reading it before installing is the point.
+Repository = "https://github.com/khwanlabs/khwan-crewai"
+Issues = "https://github.com/khwanlabs/khwan-crewai/issues"
+
+[build-system]
+requires = ["hatchling<1.28"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/khwan_crewai"]
