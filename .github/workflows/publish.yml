@@ -1,0 +1,35 @@
+name: publish
+
+# Publishing happens from a GitHub Release, over PyPI's Trusted Publishing —
+# OIDC, so there is no API token anywhere: none in the repository, none in a
+# secret, none to rotate, and none to lose. twine already reaches for this first
+# and falls back to asking for a token only when it cannot find an environment
+# that supports it.
+#
+# One-time setup on PyPI: the project's Publishing settings, add a GitHub
+# publisher for khwanlabs/khwan-crewai with workflow `publish.yml` and
+# environment `pypi`. For a name that has never been published, add it as a
+# pending publisher instead — same form, and it works for the first upload too.
+on:
+  release:
+    types: [published]
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment: pypi
+    permissions:
+      # Required for OIDC. Nothing else is, and nothing else is granted.
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - run: pip install -e . build twine
+      # Never publish something that does not pass its own tests. A release tag
+      # is the last place to find out.
+      - run: python test_khwan_crewai.py
+      - run: python -m build
+      - run: python -m twine check dist/*
+      - uses: pypa/gh-action-pypi-publish@release/v1

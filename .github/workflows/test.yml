@@ -1,0 +1,27 @@
+name: test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # The floor in requires-python, and current.
+        python-version: ["3.10", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      # Real CrewAI, not a stub of it. The whole point of this package is the
+      # contract with BaseTool, and a stub would keep passing after CrewAI
+      # changed that contract underneath us.
+      - run: pip install -e . build twine
+      - run: python test_khwan_crewai.py
+      - run: python -m build
+      - run: python -m twine check dist/*
