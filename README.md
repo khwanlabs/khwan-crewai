@@ -97,6 +97,19 @@ Cores must exist before you point at one — create them in the
 | `user_id` | no | Sub-brain within that core (paid plans). |
 | `base_url` | no | Override the API base, e.g. a local engine. |
 
+## Releasing
+
+Publishing runs from a GitHub Release over PyPI's Trusted Publishing — OIDC, so
+there is no API token in the repository, in a secret, or anywhere to rotate.
+
+One-time setup on PyPI: the project's **Publishing** settings, add a GitHub
+publisher for `khwanlabs/khwan-crewai`, workflow `publish.yml`, environment
+`pypi`. A name that has never been published is added the same way, as a
+**pending publisher**.
+
+Then a release is a tag and a click; the workflow runs the tests first and
+refuses to publish something that does not pass them.
+
 ## Related
 
 - [`khwan`](https://pypi.org/project/khwan/) — the client underneath, sync and async
